@@ -117,3 +117,12 @@ CREATE TABLE PUR_DTL(
     ITEM_QTY NUMBER,
     ITEM_PRICE NUMBER,
     TOTAL_AMOUNT NUMBER)
+
+--success message
+apex_application.g_print_success_message := 'Save successfully';
+
+--error message
+apex_error.add_error
+(   p_message               => 'Already advice created for this!!',
+    p_display_location      => apex_error.c_inline_in_notification
+);
