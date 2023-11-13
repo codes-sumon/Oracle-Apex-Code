@@ -168,3 +168,32 @@ BEGIN
     --         p_display_location      => apex_error.c_inline_in_notification
     --     );
 END;
+
+
+BEGIN
+   IF NOT APEX_COLLECTION.COLLECTION_EXISTS ('LC_DTL_LOAD') THEN        
+        APEX_COLLECTION.CREATE_COLLECTION_FROM_QUERY (
+        P_COLLECTION_NAME   => 'LC_DTL_LOAD',
+        P_QUERY             => 'select  SEQ_ID AS SEQ_NO,
+                                        ITEM_ID,
+                                        ITEM_QTY,
+                                        ITEM_QTY,
+                                        UNIT_PRICE,
+                                        TOTAL_PRICE,
+                                        PI_DTL
+                                    from PI_Details
+                                WHERE PI_ID = '|| :P31_PI_CODE ||' ORDER BY SEQ_NO');
+    ELSE
+        APEX_COLLECTION.DELETE_COLLECTION ('LC_DTL_LOAD');
+        APEX_COLLECTION.CREATE_COLLECTION_FROM_QUERY (
+        P_COLLECTION_NAME   => 'LC_DTL_LOAD',
+        P_QUERY             => 'select  SEQ_ID AS SEQ_NO,
+                                        ITEM_ID,
+                                        ITEM_QTY,
+                                        ITEM_QTY,
+                                        UNIT_PRICE,
+                                        TOTAL_PRICE,
+                                        PI_DTL
+                                    from PI_Details
+                                WHERE PI_ID = '|| :P31_PI_CODE ||' ORDER BY SEQ_NO');
+    END IF;
