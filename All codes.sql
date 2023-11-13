@@ -170,6 +170,70 @@ BEGIN
 END;
 
 
+
+--class 5
+--master save
+BEGIN
+    IF NVL(:P4_TOTAL,0) > 0 AND  NVL(:P4_GRAND_TOTAL_AMOUNT,0) > 0 THEN
+        UPDATE PUR_MST
+        SET CUS_NAME = :P4_CUS_NAME,
+            CUS_PHONE = :P4_PHN,
+            CUS_ADDS =  :P4_ADD,
+            SUB_TOTAL = :P4_TOTAL, 
+            TOTAL_DISCOUNT = :P4_DISCOUNT,
+            GRAND_TOTAL_AMOUNT = :P4_GRAND_TOTAL_AMOUNT
+        WHERE PUR_ID = :P4_PUR_MST_ID;
+    ELSE
+        apex_error.add_error
+        (   p_message               => 'Total and Grand total must be gatter then 0',
+            p_display_location      => apex_error.c_inline_in_notification
+        );
+    END IF;
+END;
+
+---details save
+
+declare 
+    V_PUR_DTL_ID number;
+BEGIN
+    IF NVL(:P4_TOTAL,0) > 0 AND  NVL(:P4_GRAND_TOTAL_AMOUNT,0) > 0 THEN
+        case :APEX$ROW_STATUS
+            when 'C' then
+                SELECT NVL(MAX(PUR_DTL_ID),0)+1
+                INTO V_PUR_DTL_ID
+                FROM PUR_DTL;
+                
+                INSERT INTO PUR_DTL(PUR_DTL_ID, PUR_MST_ID, SL_NO, ITEM_ID, ITEM_QTY, ITEM_PRICE, TOTAL_AMOUNT)
+                    VALUES(V_PUR_DTL_ID, :P4_PUR_MST_ID, :SL_NO, :ITEM_ID, :ITEM_QTY, :ITEM_PRICE, :TOTAL_AMOUNT);
+                    
+            when 'U' then
+                 UPDATE PUR_DTL
+                    SET  ITEM_ID = :ITEM_ID,
+                        ITEM_QTY = :ITEM_QTY,
+                        ITEM_PRICE = :ITEM_PRICE,
+                        TOTAL_AMOUNT = :TOTAL_AMOUNT
+                    WHERE PUR_MST_ID = :P4_PUR_MST_ID
+                    and PUR_DTL_ID = :PUR_DTL_ID;
+
+            when 'D' then
+                delete from PUR_DTL
+                WHERE PUR_MST_ID = :P4_PUR_MST_ID
+                and PUR_DTL_ID = :PUR_DTL_ID;
+        end case;
+    ELSE
+        apex_error.add_error
+        (   p_message               => 'Total and Grand total must be gatter then 0',
+            p_display_location      => apex_error.c_inline_in_notification
+        );
+    END IF;
+END;
+
+
+
+
+
+--not nessery 
+
 BEGIN
    IF NOT APEX_COLLECTION.COLLECTION_EXISTS ('LC_DTL_LOAD') THEN        
         APEX_COLLECTION.CREATE_COLLECTION_FROM_QUERY (
