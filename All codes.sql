@@ -126,3 +126,45 @@ apex_error.add_error
 (   p_message               => 'Already advice created for this!!',
     p_display_location      => apex_error.c_inline_in_notification
 );
+
+
+---MASTER DETAILS INSERT CODE
+DECLARE
+    V_PUR_ID NUMBER := 0;
+    V_PUR_DTL_ID NUMBER := 0;
+    V_PUR_CODE VARCHAR2(20);
+BEGIN
+    SELECT NVL(MAX(PUR_ID),0)+1
+    INTO V_PUR_ID
+    FROM PUR_MST;
+
+    SELECT 'INV-'||TO_CHAR(SYSDATE, 'YYYYMMDD')||'-'||LPAD(V_PUR_ID,5, '0')
+    INTO V_PUR_CODE
+    FROM DUAL;
+
+    INSERT INTO PUR_MST(PUR_ID, PUR_CODE, CUS_NAME, CUS_PHONE, CUS_ADDS, SUB_TOTAL, TOTAL_DISCOUNT, GRAND_TOTAL_AMOUNT)
+    VALUES(V_PUR_ID, V_PUR_CODE, :P3_CUS_NAME, :P3_PHONE_NUMBER, :P3_ADDRESS, :P3_SUB_TOTAL, :P3_DISCOUNT, :P3_GRAND_TOTAL);
+
+    FOR I IN (SELECT  SEQ_ID SEQ_ID,
+                        C001 ITEM_ID,
+                        N001 ITEM_QTY,
+                        N002 UNIT_PRICE,
+                        N003 TOTAL_PRICE
+                FROM APEX_COLLECTIONS 
+                WHERE COLLECTION_NAME = 'ITEM_DETAILS'
+                ORDER BY SEQ_ID ASC)
+    LOOP
+        SELECT NVL(MAX(PUR_DTL_ID),0)+1
+        INTO V_PUR_DTL_ID
+        FROM PUR_DTL;
+        INSERT INTO PUR_DTL(PUR_DTL_ID, PUR_MST_ID, SL_NO, ITEM_ID, ITEM_QTY, ITEM_PRICE, TOTAL_AMOUNT)
+                    VALUES(V_PUR_DTL_ID, V_PUR_ID, I.SEQ_ID, I.ITEM_ID, I.ITEM_QTY, I.UNIT_PRICE, I.TOTAL_PRICE);
+    END LOOP;
+    
+
+    :P3_MESSAGE := 'Invoice Save: '||V_PUR_CODE;
+    -- apex_error.add_error
+    --     (   p_message               => 'Invoice Save: '||V_PUR_CODE,
+    --         p_display_location      => apex_error.c_inline_in_notification
+    --     );
+END;
