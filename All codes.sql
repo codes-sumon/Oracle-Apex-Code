@@ -261,3 +261,94 @@ BEGIN
                                     from PI_Details
                                 WHERE PI_ID = '|| :P31_PI_CODE ||' ORDER BY SEQ_NO');
     END IF;
+
+
+----directory file save
+BEGIN
+    UTL_FILE.FREMOVE ('EMP_PHOTO_DIR',:P256_EMP_ID||'.jpg');
+EXCEPTION
+    WHEN OTHERS THEN
+    NULL;
+END;
+
+DECLARE
+    l_blob BLOB;
+BEGIN
+    IF :P256_EMP_PHOTO IS NOT NULL THEN
+        select BLOB_CONTENT
+             INTO l_blob
+             FROM apex_application_temp_files
+             where NAME = :P256_EMP_PHOTO;          
+
+        blob_to_file(p_blob       => l_blob,
+                     p_dir        => 'EMP_PHOTO_DIR',
+                     p_filename =>  :P256_EMP_ID||'.jpg'
+                    );
+    ELSE
+        RAISE_APPLICATION_ERROR(-20777,'Select a Photo!');
+    END IF;
+END;
+--
+create or replace PROCEDURE           blob_to_file (p_blob      IN OUT NOCOPY BLOB,
+                                          p_dir       IN  VARCHAR2,
+                                          p_filename  IN  VARCHAR2)
+AS
+  l_file      UTL_FILE.FILE_TYPE;
+  l_buffer    RAW(32767);
+  l_amount    BINARY_INTEGER := 32767;
+  l_pos       INTEGER := 1;
+  l_blob_len  INTEGER;
+BEGIN
+  l_blob_len := DBMS_LOB.getlength(p_blob);
+  l_file := UTL_FILE.fopen(p_dir, p_filename,'WB', 32767);
+WHILE l_pos <= l_blob_len LOOP
+    DBMS_LOB.read(p_blob, l_amount, l_pos, l_buffer);
+    UTL_FILE.put_raw(l_file, l_buffer, TRUE);
+    l_pos := l_pos + l_amount;
+  END LOOP;
+  UTL_FILE.fclose(l_file);
+EXCEPTION
+  WHEN OTHERS THEN
+    IF UTL_FILE.is_open(l_file) THEN
+       UTL_FILE.fclose(l_file);
+    END IF;
+    RAISE;
+END blob_to_file; 
+
+
+---- CUSTOM AUTHENTICATION
+function AUTH_USER(P_USERNAME VARCHAR2,P_PASSWORD VARCHAR2) RETURN BOOLEAN 
+    IS V_COUNT NUMBER;
+BEGIN 
+    SELECT COUNT(USER_ID) 
+    INTO V_COUNT 
+    FROM MY_USERS
+    WHERE IS_ACTIVE = 'Y'
+    AND TRIM(USER_NAME)=TRIM(P_USERNAME) 
+    AND TRIM(USER_PASSWORD)=TRIM(P_PASSWORD);
+
+    IF V_COUNT >= 1 THEN
+        RETURN TRUE;
+    ELSE 
+        RETURN FALSE;
+    END IF;
+END;
+
+----
+  CREATE TABLE "MY_USERS" 
+   ("USER_ID" NUMBER(20), 
+	"USER_NAME" VARCHAR2(50), 
+	"FULL_NAME" VARCHAR2(100), 
+	"PHONE_NUMBER" VARCHAR2(15), 
+	"EMAIL_ADDRESS" VARCHAR2(25), 
+	"USER_TYPE" VARCHAR2(25), 
+	"SHOP_CATEGORY" VARCHAR2(50), 
+	"IS_ACTIVE" VARCHAR2(10), 
+	"USER_PASSWORD" VARCHAR2(100), 
+	"CREATED_BY" VARCHAR2(50), 
+	"CREATE_DATE" DATE,
+    "UPDATE_BY" DATE, 
+	"UPDATE_DATE" DATE, 
+	 CONSTRAINT "MY_UID_PK" PRIMARY KEY ("USER_ID")
+  USING INDEX  ENABLE
+   ) ;
