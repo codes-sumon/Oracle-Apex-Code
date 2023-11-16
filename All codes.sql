@@ -1,3 +1,14 @@
+--select All
+<input type="checkbox" onClick="toggle(this)" />
+function toggle(source) {
+  checkboxes = document.getElementsByName('f01');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+    // console.log(i);
+  }
+}
+--
+
 --Link a item
 javascript:$s("P2_CAT_ID", "#CAT_NO#");
 
