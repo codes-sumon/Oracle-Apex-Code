@@ -363,3 +363,9 @@ END;
 	 CONSTRAINT "MY_UID_PK" PRIMARY KEY ("USER_ID")
   USING INDEX  ENABLE
    ) ;
+
+
+var spinner = apex.util.showSpinner();
+
+$("#apex_wait_overlay").remove();
+$(".u-Processing").remove(); 
