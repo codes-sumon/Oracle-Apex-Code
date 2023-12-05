@@ -369,3 +369,17 @@ var spinner = apex.util.showSpinner();
 
 $("#apex_wait_overlay").remove();
 $(".u-Processing").remove(); 
+
+
+-----Record declare
+DECLARE
+   TYPE DeptRecTyp IS RECORD (
+      deptno departments.department_id%TYPE,
+      dname  departments.department_name%TYPE,
+      loc    departments.location_id%TYPE );
+   dept_rec DeptRecTyp;
+BEGIN
+   SELECT department_id, department_name, location_id INTO dept_rec
+      FROM departments WHERE department_id = 20;
+END;
+/
