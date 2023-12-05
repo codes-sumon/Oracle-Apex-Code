@@ -9,6 +9,12 @@ function toggle(source) {
 }
 --
 
+APEX_ITEM.RADIOGROUP (1,A.VC_NO) RADIOGROUP
+APEX_ITEM.CHECKBOX (1,A.VC_NO) CHECKBOX
+
+APEX_APPLICATION.G_F01(i);
+APEX_APPLICATION.G_F01.count > 0 
+
 --Link a item
 javascript:$s("P2_CAT_ID", "#CAT_NO#");
 
