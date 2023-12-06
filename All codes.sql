@@ -389,3 +389,34 @@ BEGIN
       FROM departments WHERE department_id = 20;
 END;
 /
+
+
+--------------- EXCEL FILE UPLOAD CODE----
+DECLARE
+V_SEQ NUMBER;
+begin
+SELECT NVL(MAX(SEQ_ID),0)+1 INTO V_SEQ FROM TEMP_ROSTER_EMP WHERE USER_ID = :APP_USER;
+IF :P279_EMP_ID_FILE IS NOT NULL THEN
+    DELETE FROM TEMP_ROSTER_EMP WHERE USER_ID = :APP_USER;
+END IF;
+
+
+
+for r1 in (select *  from
+                    apex_application_temp_files f, table( apex_data_parser.parse(
+                                    p_content                     => f.blob_content,
+                                    p_skip_rows => 1,
+                                    p_add_headers_row             => 'Y',
+                                   -- p_store_profile_to_collection => 'FILE_PROV_CASH',
+                                    p_file_name                   => f.filename ) ) p
+                where      f.name = :P279_EMP_ID_FILE  --Page Item name
+                )
+        
+        LOOP
+                                            
+            INSERT INTO TEMP_ROSTER_EMP(ROS_EMP_ID,USER_ID, SEQ_ID)
+            VALUES(r1.col001,:APP_USER,V_SEQ);
+        END LOOP;
+        
+END;
+
