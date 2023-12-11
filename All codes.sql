@@ -420,3 +420,19 @@ for r1 in (select *  from
         
 END;
 
+--classic report header fixed
+<div style ="overflow-x: scroll;overflow-y: scroll;height:550px;">
+</div>
+table thead, table tfoot {
+  position: sticky;
+  z-index: 10; 
+}
+
+table thead {
+  inset-block-start: 0;
+}
+
+table tfoot {
+  inset-block-end: 0; 
+  background-color: white; 
+}
