@@ -436,3 +436,13 @@ table tfoot {
   inset-block-end: 0; 
   background-color: white; 
 }
+
+
+/* .t-Report-report thead tr th{
+    background-color: red ;
+} */
+
+.t-Report-colHead{
+    background-color: rgb(10, 131, 161) !important;
+    /* font-weight: 300; */
+}
