@@ -446,3 +446,19 @@ table tfoot {
     background-color: rgb(10, 131, 161) !important;
     /* font-weight: 300; */
 }
+
+
+-----Download Static File--------
+function download(url, filename) {
+  fetch(url)
+    .then(response => response.blob())
+    .then(blob => {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+  })
+  .catch(console.error);
+}
+
+download("#APP_FILES#JVBill_Upload.xlsx","JVBill_Upload.xlsx")
