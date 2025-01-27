@@ -11,6 +11,11 @@ var style = `
         border: 1px solid black;
     }
 </style>`;
+var reportID = 'reportArea'
+var fileName = 'Attendance Report';
+var sheetName = 'Attendance Report';
+
+tableToExcel(reportID, fileName, sheetName);
 
 var tableToExcel = (function () {
     // Define your style class template.
