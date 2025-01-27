@@ -78,11 +78,17 @@ function setFlag(regionID) {
 function selectAllRows(gridId) {
     var selectAllCheckbox = document.querySelector(`#${gridId} th.a-GV-selHeader span.u-selector`);
     if (selectAllCheckbox) {
-        selectAllCheckbox.click();
+        // Check if the checkbox is not checked
+        if (selectAllCheckbox.getAttribute('aria-checked') === 'false') {
+            selectAllCheckbox.click();
+        } else {
+            console.log(`Select All checkbox is already checked for grid ID: ${gridId}.`);
+        }
     } else {
-        console.error(`Select All checkbox not found for grid ID: ${gridId}. Verify the selector or grid ID.`);
+        console.log(`Select All checkbox not found for grid ID: ${gridId}. Verify the selector or grid ID.`);
     }
 }
+
 
 var regionInfo = [
     { regionID: 'shell-ig', itemID: 'P399_S_YIELD_1', itemName: 'Raw Material Shell Yield' },
