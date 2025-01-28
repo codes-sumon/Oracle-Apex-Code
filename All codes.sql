@@ -9,6 +9,9 @@ function toggle(source) {
 }
 --
 
+$x_Hide("btn_create");
+$x_Show("btn_reject");
+
 APEX_ITEM.RADIOGROUP (1,A.VC_NO) RADIOGROUP
 APEX_ITEM.CHECKBOX (1,A.VC_NO) CHECKBOX
 
