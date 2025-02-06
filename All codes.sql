@@ -12,6 +12,9 @@ function toggle(source) {
 $x_Hide("btn_create");
 $x_Show("btn_reject");
 
+to_amt = apex.item( "P616_TO_AMT1" ).getValue(); 
+apex.item("P616_FRM_AMT2").setValue(10);
+
 APEX_ITEM.RADIOGROUP (1,A.VC_NO) RADIOGROUP
 APEX_ITEM.CHECKBOX (1,A.VC_NO) CHECKBOX
 
