@@ -40,6 +40,9 @@ ELSE
     APEX_COLLECTION.TRUNCATE_COLLECTION ('ITEM_DETAILS');
 END IF;
 
+APEX_COLLECTION.DELETE_MEMBER (
+    p_collection_name IN VARCHAR2,
+    p_seq IN VARCHAR2);
 
 --save into a collection
 DECLARE
