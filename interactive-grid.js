@@ -1,3 +1,7 @@
+apex.region("PO_RATE_UPDATE").widget().interactiveGrid("getActions").invoke("save");
+--Save Grid data
+
+
 (function($) {
     function update(model, columnName, pageItem) {
         var columnKey = model.getFieldKey(columnName),
