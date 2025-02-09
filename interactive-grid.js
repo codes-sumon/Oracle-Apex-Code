@@ -135,3 +135,9 @@ function saveDate(){
     $s("P399_TOTAL_ITEM", totalRecord);
     apex.submit();
 };
+
+--save button hide
+button[data-action="save"] {
+    display: none !important;
+}
+
