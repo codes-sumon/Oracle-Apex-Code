@@ -1,0 +1,80 @@
+('<div class="action-menu">
+            <span aria-hidden="true" class="fa fa-accordion action-button"></span>
+            <div class="dropdown">' ||
+                CASE WHEN NVL(A.STATUS_TYPE_ID, 1) IN (1, 12)
+                     THEN '<a href="'||apex_util.prepare_url('f?p=' || :APP_ID || ':421:' || :APP_SESSION || '::NO::P421_PSC_ID:' ||A.PCS_ID)||'">Edit <span class="fa fa-edit" aria-hidden="true"></span></a>' 
+                     ELSE '' 
+                END ||
+                CASE WHEN NVL(A.STATUS_TYPE_ID, 1) NOT IN (1,12)
+                     THEN '<a href="#" onclick="setCopyValue(' || A.PCS_ID || ',''' || A.PCS_NO || ''')">Copy <span aria-hidden="true" class="fa fa-copy"></span></a>' 
+                     ELSE '' 
+                END ||
+                '
+            </div>
+        </div>') AS ACTION_BTN
+
+
+
+/*CSS Style */
+
+.action-menu {
+    position: relative;
+    display: inline-block;
+    z-index: 10;
+}
+
+.action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: #337ac0;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    background-color: #EAEAEA;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    min-width: 80px;
+    z-index: 999999 !important; 
+    font-weight: bold;
+    left: 50%; 
+    transform: translateX(-50%);
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.a-IRR-tableContainer {
+    overflow: visible !important;
+}
+
+
+
+.dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    text-decoration: none;
+    color: #337ac0;
+}
+
+.dropdown a:hover {
+    background-color: #B771E5;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.action-menu:hover .dropdown {
+    display: block;
+}
+
+
+.a-IRR-tableContainer,
+.a-IRR-region,
+.t-Report-wrap {
+    overflow: visible !important;
+}
