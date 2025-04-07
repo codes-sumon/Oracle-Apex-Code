@@ -23,3 +23,27 @@ function runReport() {
         }
     );
 }
+
+
+----- JSON DATA
+
+BEGIN
+  apex_json.open_object;
+  apex_json.write('emp_name', 'John Doe');
+  apex_json.write('emp_id', 12345);
+  apex_json.write('designation', 'Manager');
+  apex_json.close_object;
+END;
+
+function getCMPCT() {
+    apex.server.process("GET_CM",
+        { pageItems: "#P431_PSC_ID, #P431_STD_CRT_OUTPUT_QTY" },
+        {   
+            dataType: 'json', 
+            success: function(pData) { 
+                // $("#report1").html(pData);
+                console.log(pData.CM_PCT);
+            }
+        }
+    );
+}
