@@ -1,0 +1,25 @@
+//for multiple ajax process
+function runReport() {
+    var spinner = apex.util.showSpinner();
+
+    apex.server.process("REPORT_P1",
+        { pageItems: "#P400_PCS_ID" },
+        {   
+            dataType: 'text', 
+            success: function(pData) { 
+                $("#report1").html(pData);
+
+                // Run REPORT_P2 only after REPORT_P1 is successful
+                apex.server.process("REPORT_P2",
+                    { pageItems: "#P400_PCS_ID" },
+                    {   
+                        dataType: 'text', 
+                        success: function(pData) { 
+                            $("#report2").html(pData);
+                        }
+                    }
+                );
+            }
+        }
+    );
+}
