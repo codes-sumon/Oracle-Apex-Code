@@ -1,0 +1,95 @@
+BEGIN
+  ORDS.create_role(
+    p_role_name => 'EMP_ACCESS_ROLL'
+  );
+  
+  COMMIT;
+END;
+
+
+SELECT *
+FROM   user_ords_roles
+WHERE  name = 'EMP_ACCESS_ROLL';
+
+
+
+BEGIN
+  ORDS.create_privilege(
+      p_name        => 'Employee_Privilege',
+      p_role_name   => 'EMP_ACCESS_ROLL',
+      p_label       => 'EMP Data',
+      p_description => 'Allow access to the EMP data.');
+
+  ORDS.create_privilege_mapping(
+      p_privilege_name => 'Employee_Privilege',
+      p_pattern        => '/employees/*');     
+
+  COMMIT;
+END;
+
+
+DECLARE
+  l_roles_arr    OWA.vc_arr;
+  l_patterns_arr OWA.vc_arr;
+BEGIN
+  l_roles_arr(1)    := 'EMP_ACCESS_ROLL';
+  l_patterns_arr(1) := '/employees/*';
+  
+  ORDS.define_privilege (
+    p_privilege_name => 'Employee_Privilege',
+    p_roles          => l_roles_arr,
+    p_patterns       => l_patterns_arr,
+    p_label          => 'EMP Data',
+    p_description    => 'Allow access to the EMP data.'
+  );
+   
+  COMMIT;
+END;
+
+
+SELECT id, name
+FROM   user_ords_privileges
+WHERE  name = 'Employee_Privilege';
+
+SELECT privilege_id, privilege_name, role_id, role_name
+FROM   user_ords_privilege_roles
+WHERE  role_name = 'EMP_ACCESS_ROLL';
+
+
+
+
+BEGIN
+  OAUTH.create_client(
+    p_name            => 'emp_client',
+    p_grant_type      => 'client_credentials',
+    p_owner           => 'My Company Limited',
+    p_description     => 'A client for Emp management',
+    p_support_email   => 'wpdev.sumon@gmail.com',
+    p_privilege_names => 'Employee_Privilege'
+  );
+  COMMIT;
+END;
+
+
+SELECT id, name, client_id, client_secret
+FROM   user_ords_clients;
+
+-- Display client-privilege relationship.
+SELECT name, client_name
+FROM   user_ords_client_privileges;
+
+
+BEGIN
+  OAUTH.grant_client_role(
+    p_client_name => 'emp_client',
+    p_role_name   => 'EMP_ACCESS_ROLL'
+  );
+  COMMIT;
+END;
+
+
+SELECT client_name, role_name
+FROM   user_ords_client_roles;
+
+
+https://apex.oracle.com/pls/apex/devsumon/oauth/token
