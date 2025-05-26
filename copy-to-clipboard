@@ -1,0 +1,35 @@
+<style>
+  .copied-msg {
+    display: inline-block;
+    margin-left: 10px;
+    color: green;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    font-weight: bold;
+    font-size: 0.9em;
+  }
+
+  .copied-msg.show {
+    opacity: 1;
+  }
+</style>
+
+<b onclick="copyTextWithMessage(this)">HBP-APR25-009655</b>
+<span class="copied-msg" id="copy-msg">Copied!</span>
+
+<script>
+  function copyTextWithMessage(el) {
+    const text = el.innerText;
+
+    // Modern clipboard API
+    navigator.clipboard.writeText(text).then(() => {
+      const msg = document.getElementById("copy-msg");
+      msg.classList.add("show");
+
+      // Remove the message after 2 seconds
+      setTimeout(() => {
+        msg.classList.remove("show");
+      }, 2000);
+    });
+  }
+</script>
