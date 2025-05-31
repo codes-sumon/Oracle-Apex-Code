@@ -141,3 +141,28 @@ button[data-action="save"] {
     display: none !important;
 }
 
+-----------download----------------
+
+apex.region("salarySummary").widget().interactiveGrid("getActions").invoke("show-download-dialog");
+
+
+var ig$ = apex.region("salarySummary").widget();
+ig$.interactiveGrid("getActions").invoke("show-download-dialog");
+
+$("div[aria-labelledby='ui-id-1']").find("button").each(function(){
+  if ($(this).html() == "Download") {
+    $(this).trigger("click");
+  }
+});
+
+OR
+
+
+ var ig$ = apex.region("salarySummary").widget();
+ ig$.interactiveGrid("getActions").invoke("show-download-dialog");
+ $("div[aria-describedby='salarySummary_ig_download_dialog']").find("button").each(function(){
+   if ($(this).html() == "Download")
+   {
+     $(this).trigger("click");
+   }
+ });
